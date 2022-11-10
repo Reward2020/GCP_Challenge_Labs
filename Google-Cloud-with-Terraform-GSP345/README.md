@@ -7,6 +7,7 @@
 Make the empty files and directories in Cloud Shell or the Cloud Shell Editor.
 ------------------------------------------------------------------------------------
 
+```linux
 touch main.tf
 touch variables.tf
 mkdir modules
@@ -23,11 +24,12 @@ touch storage.tf
 touch outputs.tf
 touch variables.tf
 cd ~
+```
 
---------------------------------------------------------------------------------
-Add the following to the **each variables.tf** file, and fill in the GCP Project ID:
---------------------------------------------------------------------------------
+### Add the following to the ```each variables.tf``` file, and fill in the GCP Project ID:
 
+
+```terraform
 variable "region" {
  default = "us-east1"
 }
@@ -39,11 +41,12 @@ variable "zone" {
 variable "project_id" {
  default = "<FILL IN PROJECT ID>"
 }
-
+```
 ------------------------------------------
 Add the following to the **main.tf** file :
 ------------------------------------------
 
+```terraform
 terraform {
   required_providers {
     google = {
@@ -66,21 +69,24 @@ module "instances" {
   source     = "./modules/instances"
 
 }
-
+```
 ---------------------------------------------------------------------------------
 Run " terraform init " in Cloud Shell in the root directory to initialize terraform.
 ---------------------------------------------------------------------------------
 
 ====================== TASK 2: Import infrastructure ======================
 
+```
 Navigate to Compute Engine > VM Instances. Click on tf-instance-1. Copy the Instance ID down somewhere to use later.
 
 Navigate to Compute Engine > VM Instances. Click on tf-instance-2. Copy the Instance ID down somewhere to use later.
+```
 
-Next, navigate to modules/instances/instances.tf. Copy the following configuration into the file:
+Next, navigate **to modules/instances/instances.tf.** Copy the following configuration into the file:
 
 --------------------------------------------------------------
 
+```terraform
 resource "google_compute_instance" "tf-instance-1" {
   name         = "tf-instance-1"
   machine_type = "e2-micro"
@@ -114,6 +120,7 @@ resource "google_compute_instance" "tf-instance-2" {
  network = "default"
   }
 }
+```
 
 --------------------------------------------------------------------------------------------
 
@@ -131,22 +138,24 @@ terraform import module.instances.google_compute_instance.tf-instance-2 <Instanc
 
 The two instances have now been imported into your terraform configuration. You can now optionally run the commands to update the state of Terraform. Type yes at the dialogue after you run the apply command to accept the state changes.
 
-----------------
+```terraform
 terraform plan
 terraform apply
-----------------
+```
 
 ====================== TASK 3: Configure a remote backend ======================
 
 Add the following code to the **modules/storage/storage.tf** file:
 
 -------------------------------------------------------------------
+```terraform
 resource "google_storage_bucket" "storage-bucket" {
   name          = var.project_id
   location      = "US"
   force_destroy = true
   uniform_bucket_level_access = true
 }
+```
 -------------------------------------------------------------------
 
 Next, add the following to the **main.tf** file:
@@ -269,6 +278,7 @@ terraform apply
 **Remove the <Instance Name>** resource from the instances.tf file. Delete the following code chunk from the file.
 
 -----------------------------------------------------------
+
 resource "google_compute_instance" "<Instance Name>" {
   name         = "<Instance Name>"
   machine_type = "n1-standard-2"
@@ -285,7 +295,8 @@ resource "google_compute_instance" "<Instance Name>" {
  network = "default"
   }
 }
---------------------------------------------------------------------
+
+-----------------------------------------------------------
 
 Run the following commands to apply the changes. Type yes at the prompt.
 
@@ -297,6 +308,7 @@ terraform apply
 Copy and paste the following **into the main.tf** file and fill in the GCP **VPC Name**:
 
 ----------------------------------------------------------------
+
 module "vpc" {
     source  = "terraform-google-modules/network/google"
     version = "~> 3.4.0"
@@ -321,6 +333,7 @@ module "vpc" {
         }
     ]
 }
+
 -------------------------------------------------------------------------------
 
 Run the following commands to initialize the module and create the VPC. Type yes at the prompt.
