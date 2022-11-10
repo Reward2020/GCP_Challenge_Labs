@@ -59,7 +59,6 @@ terraform {
 provider "google" {
   project     = var.project_id
   region      = var.region
-
   zone        = var.zone
 }
 
@@ -90,14 +89,17 @@ Navigate to Compute Engine > VM Instances. Click on tf-instance-2. Copy the Inst
 resource "google_compute_instance" "tf-instance-1" {
   name         = "tf-instance-1"
   machine_type = "e2-micro"
-  zone         = var.zone
-  allow_stopping_for_update = true
+  zone         = var.zone 
 
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-10"
     }
   }
+  metadata_startup_script = <<-EOT
+        #!/bin/bash
+    EOT
+  allow_stopping_for_update = true
 
   network_interface {
  network = "default"
@@ -108,13 +110,16 @@ resource "google_compute_instance" "tf-instance-2" {
   name         = "tf-instance-2"
   machine_type = "e2-micro"
   zone         = var.zone
-  allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-10"
     }
   }
+  metadata_startup_script = <<-EOT
+        #!/bin/bash
+    EOT
+  allow_stopping_for_update = true
 
   network_interface {
  network = "default"
@@ -184,7 +189,7 @@ terraform {
   required_providers {
     google = {
       source = "hashicorp/google"
-      version = " < 4.0.0"
+      version = "3.55.0"
     }
   }
 }
