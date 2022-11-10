@@ -37,7 +37,7 @@ variable "gcp_region" {
 variable "instance_type" {
   description = "Type of the instance"
   type        = string
-  default     = "f1-micro"
+  default     = "e2-micro"
 }
 variable "location" {
   description = "The location of the bucket."
