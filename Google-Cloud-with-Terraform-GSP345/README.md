@@ -1,11 +1,11 @@
-# GCP_Challenge_Labs
+## GCP_Challenge_Labs
 ######################################################################################
-## Automating Infrastructure on Google Cloud with Terraform: Challenge Lab # GSP345 ##
+### Automating Infrastructure on Google Cloud with Terraform: Challenge Lab # GSP345 ##
 ######################################################################################
 
-====================== Setup : Create the configuration files ======================
-Make the empty files and directories in Cloud Shell or the Cloud Shell Editor.
-------------------------------------------------------------------------------------
+==================== Setup : Create the configuration files ====================
+##### Make the empty files and directories in Cloud Shell or the Cloud Shell Editor.
+
 
 ```linux
 touch main.tf
@@ -26,7 +26,7 @@ touch variables.tf
 cd ~
 ```
 
-### Add the following to the ```each variables.tf``` file, and fill in the GCP Project ID:
+##### Add the following to the ```each variables.tf``` file, and fill in the GCP Project ID:
 
 
 ```terraform
@@ -42,9 +42,9 @@ variable "project_id" {
  default = "<FILL IN PROJECT ID>"
 }
 ```
-------------------------------------------
-Add the following to the **main.tf** file :
-------------------------------------------
+
+##### Add the following to the ```main.tf``` file :
+
 
 ```terraform
 terraform {
@@ -70,9 +70,9 @@ module "instances" {
 
 }
 ```
----------------------------------------------------------------------------------
-Run " terraform init " in Cloud Shell in the root directory to initialize terraform.
----------------------------------------------------------------------------------
+
+##### Run ```" terraform init "``` in Cloud Shell in the root directory to ```initialize terraform.```
+
 
 ====================== TASK 2: Import infrastructure ======================
 
@@ -82,9 +82,9 @@ Navigate to Compute Engine > VM Instances. Click on tf-instance-1. Copy the Inst
 Navigate to Compute Engine > VM Instances. Click on tf-instance-2. Copy the Instance ID down somewhere to use later.
 ```
 
-Next, navigate **to modules/instances/instances.tf.** Copy the following configuration into the file:
+##### Next, navigate to ```modules/instances/instances.tf```. Copy the following configuration into the file:
 
---------------------------------------------------------------
+
 
 ```terraform
 resource "google_compute_instance" "tf-instance-1" {
@@ -122,19 +122,19 @@ resource "google_compute_instance" "tf-instance-2" {
 }
 ```
 
---------------------------------------------------------------------------------------------
 
-**To import the first instance**, use the following command, using the Instance ID for tf-instance-1 you copied down earlier.
 
-------------------------------------------------------------------------------------------
-terraform import module.instances.google_compute_instance.tf-instance-1 <Instance ID - 1>
-------------------------------------------------------------------------------------------
+##### ```To import the first instance```, use the following command, using the Instance ID for tf-instance-1 you copied down earlier.
 
-To import the second instance, use the following command, using the Instance ID for tf-instance-2 you copied down earlier.
 
-------------------------------------------------------------------------------------------
-terraform import module.instances.google_compute_instance.tf-instance-2 <Instance ID - 2>
-------------------------------------------------------------------------------------------
+```terraform import module.instances.google_compute_instance.tf-instance-1 <Instance ID - 1>```
+
+
+##### To import the second instance, use the following command, using the Instance ID for tf-instance-2 you copied down earlier.
+
+
+```terraform import module.instances.google_compute_instance.tf-instance-2 <Instance ID - 2>```
+
 
 The two instances have now been imported into your terraform configuration. You can now optionally run the commands to update the state of Terraform. Type yes at the dialogue after you run the apply command to accept the state changes.
 
@@ -145,9 +145,9 @@ terraform apply
 
 ====================== TASK 3: Configure a remote backend ======================
 
-Add the following code to the **modules/storage/storage.tf** file:
+##### Add the following code to the ```modules/storage/storage.tf ```file:
 
--------------------------------------------------------------------
+
 ```terraform
 resource "google_storage_bucket" "storage-bucket" {
   name          = var.project_id
@@ -156,26 +156,26 @@ resource "google_storage_bucket" "storage-bucket" {
   uniform_bucket_level_access = true
 }
 ```
--------------------------------------------------------------------
 
-Next, add the following to the **main.tf** file:
 
-------------------------------------------------------------------
+##### Next, add the following to the ```main.tf``` file:
+
+```terraform
 module "storage" {
   source     = "./modules/storage"
 }
-----------------------------------------------------------------------------
+```
 
 Run the following commands to initialize the module and create the storage bucket resource. Type yes at the dialogue after you run the apply command to accept the state changes.
 
-------------------------
+```terraform
 terraform init
 terraform apply
-------------------------
+```
 
-Next, **update the main.tf** file so that the terraform block looks like the following. **Fill in your GCP Project ID** for the bucket argument definition.
+##### Next, ```update the main.tf``` file so that the terraform block looks like the following. ```Fill in your GCP Project ID``` for the bucket argument definition.
 
--------------------------------------------
+```terraform
 terraform {
   backend "gcs" {
     bucket  = "<FILL IN PROJECT ID>"
@@ -188,19 +188,19 @@ terraform {
     }
   }
 }
---------------------------------------------
+```
 
 Run the following to initialize the remote backend. Type yes at the prompt.
 
-----------------
+```terraform
 terraform init
-----------------
+```
 
 ====================== TASK 4: Modify and update infrastructure ======================
 
-Navigate to **modules/instances/instance.tf.** Replace the entire contents and fill **VPC Name** of the file with the following:
+##### Navigate to ```modules/instances/instance.tf.``` Replace the entire contents and fill ```Instance Name``` of the file with the following:
 
---------------------------------------------------------
+```terraform
 resource "google_compute_instance" "tf-instance-1" {
   name         = "tf-instance-1"
   machine_type = "n1-standard-2"
@@ -251,34 +251,34 @@ resource "google_compute_instance" "<Instance Name>" {
  network = "default"
   }
 }
---------------------------------------------------------------------------------------------------
+```
 
 Run the following commands to initialize the module and create/update the instance resources. Type yes at the dialogue after you run the apply command to accept the state changes.
 
-----------------
+```terraform
 terraform init
 terraform apply
-----------------
+```
 
 ====================== TASK 5: Taint and destroy resources ======================
 
-**Taint the <Instance Name>** resource by running the following command:
+```Taint the <Instance Name>``` resource by running the following command:
 
-------------------------------------------------------------------------
+```terraform
 terraform taint module.instances.google_compute_instance.<Instance Name>
-------------------------------------------------------------------------
+```
 
 Run the following commands to apply the changes:
 
-----------------
+```terraform
 terraform init
 terraform apply
-----------------
+```
 
-**Remove the <Instance Name>** resource from the instances.tf file. Delete the following code chunk from the file.
+##### ```Remove the <Instance Name>``` resource from the instances.tf file. Delete the following code chunk from the file.
 
------------------------------------------------------------
 
+```terraform
 resource "google_compute_instance" "<Instance Name>" {
   name         = "<Instance Name>"
   machine_type = "n1-standard-2"
@@ -295,20 +295,18 @@ resource "google_compute_instance" "<Instance Name>" {
  network = "default"
   }
 }
-
------------------------------------------------------------
+```
 
 Run the following commands to apply the changes. Type yes at the prompt.
 
-----------------
+```terraform
 terraform apply
-----------------
+```
 
 ====================== TASK 6: Use a module from the Registry ======================
-Copy and paste the following **into the main.tf** file and fill in the GCP **VPC Name**:
+##### Copy and paste the following ```into the main.tf``` file and fill in the GCP ```VPC Name```:
 
-----------------------------------------------------------------
-
+```terraform
 module "vpc" {
     source  = "terraform-google-modules/network/google"
     version = "~> 3.4.0"
@@ -333,19 +331,18 @@ module "vpc" {
         }
     ]
 }
-
--------------------------------------------------------------------------------
+```
 
 Run the following commands to initialize the module and create the VPC. Type yes at the prompt.
 
----------------
+```terraform
 terraform init
 terraform apply
-----------------
+```
 
-Navigate to **modules/instances/instances.tf**. Replace the entire contents of the file with the following:
+##### Navigate to ```modules/instances/instances.tf.``` Replace the entire contents of the file with the following:
 
--------------------------------------------------------
+```terraform
 resource "google_compute_instance" "tf-instance-1" {
   name         = "tf-instance-1"
   machine_type = "n1-standard-2"
@@ -381,19 +378,19 @@ resource "google_compute_instance" "tf-instance-2" {
     subnetwork = "subnet-02"
   }
 }
---------------------------------------------------------------------------------------------
+```
 
 Run the following commands to initialize the module and update the instances. Type yes at the prompt.
 
----------------
+```terraform
 terraform init
 terraform apply
-----------------
+```
 
 ====================== TASK 7: Configure a firewall ======================
-Add the following resource **to the main.tf** file and fill in the GCP **Project ID** and **VPC Name**:
+##### Add the following resource ```to the main.tf``` file and fill in the GCP ```Project ID``` and ```VPC Name```:
 
-------------------------------------------------------------------
+```terraform
 resource "google_compute_firewall" "tf-firewall" {
   name    = "tf-firewall"
  network = "projects/<PROJECT_ID>/global/networks/<VPC Name>"
@@ -406,14 +403,14 @@ resource "google_compute_firewall" "tf-firewall" {
   source_tags = ["web"]
   source_ranges = ["0.0.0.0/0"]
 }
--------------------------------------------------------------------------
+```
 
 Run the following commands to configure the firewall. Type yes at the prompt.
 
----------------------
+```terraform
 terraform init
 terraform apply
-----------------------
+```
 
 ######################################################################################
 ## Automating Infrastructure on Google Cloud with Terraform: Challenge Lab # GSP345 ##
